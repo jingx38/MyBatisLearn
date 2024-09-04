@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:property-placeholder  location="jdbc.properties"/>
+
+    <context:component-scan base-package="com.jay"/>
+    <!--配置数据源-->
+    <bean id="dataSource" class="org.apache.ibatis.datasource.pooled.PooledDataSource">
+        <!-- 配置与数据库交互的4个必要属性 -->
+        <property name="driver" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+
+    <!--配置sqlSessionFactory-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 给 SqlSessionFactory 配置数据源，这里引用上面的数据源配置 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!--配置MyBatis-cfg.xml的路径-->
+        <property name="configLocation" value="MyBatis-cfg.xml"/>
+        <!--配置映射文件-->
+        <property name="mapperLocations" value="mybatis/*.xml"/>
+    </bean>
+    <!--配置MapperScannerConfigurer-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--配合Dao接口所在的包-->
+        <property name="basePackage" value="com.jay.mapper"/>
+    </bean>
+
+</beans>

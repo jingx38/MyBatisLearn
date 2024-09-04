@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jay.chapter2.mapper.Student3Mapper">
+    <resultMap id="studentResult" type="com.jay.chapter2.entity.Student">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="age" column="age"/>
+        <result property="sexEnum" column="sex"
+                typeHandler="com.jay.chapter2.Handler.GeneralEnumHandler"/>
+    </resultMap>
+
+    <!--运用where，if元素进行条件拼接-->
+    <select id="selectStudent" resultMap="studentResult">
+        SELECT * FROM student
+        <where>
+            <if test="id!=null">
+                id=#{id}
+            </if>
+            <if test="name!=null">
+                AND name like CONCAT('%',#{name},'%')
+            </if>
+        </where>
+    </select>
+
+    <!--运用foreach元素进行实现in查询-->
+    <select id="selectByIds" resultMap="studentResult">
+        SELECT * FROM student
+        <where>
+            <if test="ids!=null">
+                id IN
+                <foreach collection="ids" open="(" close=")" separator="," item="id">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <!--运用choose,when,otherwise元素实现多条件分支-->
+    <select id="selectByNameOrAge" resultMap="studentResult">
+        SELECT * FROM student
+        <where>
+            <choose>
+                <when test="name!=null">
+                    AND name like CONCAT('%',#{name},'%')
+                </when>
+                <when test="age!=null">
+                    AND age=#{age}
+                </when>
+                <otherwise>
+                    1=1
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <!--运用set元素sql拼接问题-->
+    <update id="updateStudent" parameterType="Student">
+        UPDATE student
+        <set>
+            <if test="name!=null">
+                name=#{name},
+            </if>
+            <if test="age!=null">
+                age=#{age},
+            </if>
+        </set>
+        <where>
+            id=#{id}
+        </where>
+    </update>
+</mapper>

@@ -1,0 +1,20 @@
+
+#DataSource config
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/mybatisdemo?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: admin
+mybatis:
+  config-location: MyBatis-cfg.xml
+  mapper-locations: mybatis/*.xml
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+#    打印sql
+    com.jay.mapper: DEBUG
+server:
+  port: 8081
+
